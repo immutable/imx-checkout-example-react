@@ -45,9 +45,15 @@
 }
 
 #app {
+  display: block;
+  min-height: 100vh;
+}
+
+#button-container {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: '100%';
   gap: 20px;
+  padding: 20px;
 }

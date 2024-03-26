@@ -16,6 +16,7 @@ Make sure you have added the following to your vite.config.ts file
 ```
 define: {
     'process.env': {},
+    'process.version': '""',
     'global': {}
   },
 ```

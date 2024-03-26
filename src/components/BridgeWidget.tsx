@@ -3,13 +3,23 @@ import { CheckoutContext } from '../context/CheckoutContext'
 import { BridgeEventType, BridgeTransactionSent } from '@imtbl/sdk/checkout';
 
 function BridgeWidget() {
-  const {widgets: {bridge}} = useContext(CheckoutContext);
+  const {setWidgetData, widgets: {bridge}, widgetData} = useContext(CheckoutContext);
+  const {bridgeData: {params}} = widgetData; 
 
   useEffect(() => {
     if(!bridge) return;
-    bridge?.mount('bridge-target');
+    bridge?.mount('bridge-target', params);
 
-    bridge.addListener(BridgeEventType.CLOSE_WIDGET, () => bridge.unmount());
+    bridge.addListener(BridgeEventType.CLOSE_WIDGET, () => {
+      bridge.unmount();
+      setWidgetData((prev) => ({
+        ...prev,
+        bridgeData: { 
+          params: {}, 
+          show: false
+        }
+        }))
+    });
     bridge.addListener(BridgeEventType.TRANSACTION_SENT, (transactionSent: BridgeTransactionSent) => {
       console.log(transactionSent);
     });
@@ -17,7 +27,7 @@ function BridgeWidget() {
     return () => {
       bridge.unmount();
     }
-  }, [bridge])
+  }, [bridge, setWidgetData, params])
 
   return (
     <div id="bridge-target"></div>

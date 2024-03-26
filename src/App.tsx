@@ -1,53 +1,69 @@
+import { useContext } from 'react'
 import './App.css'
-import {checkout} from '@imtbl/sdk';
-import { CheckoutProvider } from './context/CheckoutContext';
+import { CheckoutContext } from './context/CheckoutContext'
 import ConnectWidget from './components/ConnectWidget';
 import WalletWidget from './components/WalletWidget';
 import SwapWidget from './components/SwapWidget';
-import BridgeWidget from './components/BridgeWidget';
 import OnrampWidget from './components/OnrampWidget';
-import { Environment } from '@imtbl/sdk/config';
-
-
-const applicationEnvironment = Environment.SANDBOX;
-
-// If adding Passport - Create Passport instance and add to Checkout instance
-// const passportInstance = new passport.Passport({
-//   baseConfig: new ImmutableConfiguration({ environment: applicationEnvironment }),
-//   clientId: '', /** clientId from https://hub.immutable.com */
-//   redirectUri: '', /** redirectUri from https://hub.immutable.com */
-//   logoutRedirectUri: '', /** logoutRedirectUri from https://hub.immutable.com */
-//   audience: 'platform_api',
-//   scope: 'openid offline_access email transact',
-// });
-
-// Create Checkout instance
-const checkoutInstance = new checkout.Checkout({
-  baseConfig: {environment: applicationEnvironment},
-  publishableKey: undefined, // get publishable key at https://hub.immutable.com
-  passport: undefined, // configure application for Passport at https://hub.immutable.com
-});
+import BridgeWidget from './components/BridgeWidget';
 
 function App() {
+  const {
+    widgetData: { 
+      connectData: {
+        show: showConnect
+      },
+      walletData: {
+        show: showWallet
+      },
+      swapData: {
+        show: showSwap
+      },
+      onrampData: {
+        show: showOnramp
+      },
+      bridgeData: {
+        show: showBridge
+      }
+    }, 
+    setWidgetData} = useContext(CheckoutContext);
 
-  // Test each widget by showing each one
-  const showConnect = false;
-  const showWallet = true;
-  const showSwap = false;
-  const showBridge = false;
-  const showOnramp = false;
+  function showConnectWidget() {
+    setWidgetData((prev) => ({...prev, connectData: {params: {}, show: true}}));
+  }
+
+  function showWalletWidget() {
+    setWidgetData((prev) => ({...prev, walletData: {params: {}, show: true}}));
+  }
+
+  function showSwapWidget() {
+    setWidgetData((prev) => ({...prev, swapData: {params: {}, show: true}}));
+  }
+
+  function showBridgeWidget() {
+    setWidgetData((prev) => ({...prev, bridgeData: {params: {}, show: true}}));
+  }
+
+  function showOnrampWidget() {
+    setWidgetData((prev) => ({...prev, onrampData: {params: {}, show: true}}));
+  }
 
   return (
-    <CheckoutProvider checkout={checkoutInstance}>
     <div id="app">
       <h1>Immutable Checkout Example React</h1>
+      <div id="button-container">
+        <button onClick={showConnectWidget}>Show Connect</button>
+        <button onClick={showWalletWidget}>Show Wallet</button>
+        <button onClick={showSwapWidget}>Show Swap</button>
+        <button onClick={showBridgeWidget}>Show Bridge</button>
+        <button onClick={showOnrampWidget}>Show Onramp</button>
+      </div>
       {showConnect && <ConnectWidget />}
       {showWallet && <WalletWidget />}
       {showSwap && <SwapWidget />}
-      {showBridge && <BridgeWidget />}
       {showOnramp && <OnrampWidget />}
+      {showBridge && <BridgeWidget />}
     </div>
-    </CheckoutProvider>
   )
 }
 
